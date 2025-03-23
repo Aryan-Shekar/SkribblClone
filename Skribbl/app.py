@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode='eventlet')
 
+
 players = []
 scores = {}
 current_drawer_index = 0
@@ -85,4 +86,8 @@ def next_turn():
     start_round()
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=10000)
+    import os
+    PORT = int(os.environ.get("PORT", 10000))
+    socketio.run(app, host='0.0.0.0', port=PORT)
+
+

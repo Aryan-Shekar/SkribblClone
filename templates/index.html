@@ -1,32 +1,144 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Multiplayer Skribbl Clone</title>
-    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
-    <style>
-        canvas { border: 1px solid black; }
-        #chat { height: 150px; overflow-y: scroll; border: 1px solid #ccc; padding: 5px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Sketch & Guess Game</title>
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #3f51b5;
+      color: white;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+    #game-container {
+      display: flex;
+      margin-top: 20px;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #left-panel {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    canvas {
+      border: 2px solid #ccc;
+      background-color: white;
+    }
+
+    #chat {
+      height: 180px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 10px;
+      margin-top: 15px;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    #scoreboard {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    #controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    input, button {
+      padding: 8px 12px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      outline: none;
+      box-shadow: none;
+      transition: all 0.2s ease-in-out;
+    }
+
+    button {
+      background-color: #3f51b5;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #303f9f;
+    }
+
+
+    #timer {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #ff5722;
+    }
+
+    .drawer-word {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <h2>Skribbl Clone</h2>
-    <div>
-        <input id="username" placeholder="Enter your name" />
-        <button onclick="joinGame()">Join Game</button>
+
+  <header>🎨 Sketch & Guess</header>
+
+  <div id="game-container">
+    <div id="left-panel">
+      <canvas id="canvas" width="600" height="400"></canvas>
+      <div id="controls">
+        <input id="guessInput" placeholder="Enter guess" />
+        <button onclick="sendGuess()">Send</button>
+      </div>
+      <div id="chat"></div>
     </div>
 
-    <p id="status"></p>
-    <p><b>Timer:</b> <span id="timer">--</span></p>
+    <div id="right-panel">
+      <div>
+        <input id="username" placeholder="Enter name" />
+        <button onclick="joinGame()">Join Game</button>
+      </div>
+      <p id="status">Not joined</p>
+      <p>⏱ Time Left: <span id="timer">--</span></p>
+      <h3>Scores:</h3>
+      <ul id="scoreboard"></ul>
+    </div>
+  </div>
 
-    <canvas id="canvas" width="600" height="400"></canvas>
-    <br>
-    <input id="guessInput" placeholder="Guess here" />
-    <button onclick="sendGuess()">Send Guess</button>
-
-    <div id="chat"></div>
-    <h3>Scores:</h3>
-    <ul id="scoreboard"></ul>
-
-    <script src="/static/script.js"></script>
+  <script src="/static/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiplayer Skribbl Clone</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <style>
+        canvas { border: 1px solid black; }
+        #chat { height: 150px; overflow-y: scroll; border: 1px solid #ccc; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Skribbl Clone</h2>
+    <div>
+        <input id="username" placeholder="Enter your name" />
+        <button onclick="joinGame()">Join Game</button>
+    </div>
+
+    <p id="status"></p>
+    <p><b>Timer:</b> <span id="timer">--</span></p>
+
+    <canvas id="canvas" width="600" height="400"></canvas>
+    <br>
+    <input id="guessInput" placeholder="Guess here" />
+    <button onclick="sendGuess()">Send Guess</button>
+
+    <div id="chat"></div>
+    <h3>Scores:</h3>
+    <ul id="scoreboard"></ul>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

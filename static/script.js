@@ -22,11 +22,14 @@ socket.on("player_list", (data) => {
 
 socket.on("start_round", (data) => {
     isDrawer = data.drawer === username;
-    document.getElementById("status").innerText = isDrawer
-        ? `You're drawing: ${data.word}`
-        : `Waiting for ${data.drawer} to draw...`;
+    if (isDrawer) {
+        document.getElementById("status").innerHTML = `🎨 You're drawing: <span class="drawer-word">${data.word}</span>`;
+    } else {
+        document.getElementById("status").innerText = `Guess what ${data.drawer} is drawing...`;
+    }
     clearCanvas();
 });
+
 
 socket.on("draw", (data) => {
     draw(data.x, data.y);

@@ -1,24 +1,23 @@
-from flask import Flask, render_template
-from flask_socketio import SocketIO, emit, join_room
-import random
-import threading
-import time
+# 👇 IMPORTANT: Patch eventlet BEFORE importing anything else
 import eventlet
 eventlet.monkey_patch()
 
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+import random
+import threading
+import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 players = []
 scores = {}
 current_drawer_index = 0
 current_word = ""
 round_time = 60
-timer_thread = None
 round_active = False
-
 words = ['apple', 'car', 'tree', 'house', 'sun', 'fish']
 
 @app.route('/')
@@ -27,30 +26,27 @@ def index():
 
 @socketio.on('join')
 def on_join(data):
-    global current_word, round_active
+    global round_active
     username = data['username']
     if username not in players:
         players.append(username)
         scores[username] = 0
     emit('player_list', {'players': players, 'scores': scores}, broadcast=True)
-
     if not round_active:
         start_round()
 
 def start_round():
-    global current_word, round_active, timer_thread
-
+    global current_word, round_active
     round_active = True
     current_drawer = players[current_drawer_index]
     current_word = random.choice(words)
 
     socketio.emit('start_round', {
         'drawer': current_drawer,
-        'word': current_word  # Only drawer gets to see this
-    }, room=None)
+        'word': current_word  # only drawer sees this
+    })
 
-    timer_thread = threading.Thread(target=round_timer)
-    timer_thread.start()
+    threading.Thread(target=round_timer).start()
 
 def round_timer():
     global round_time, round_active
@@ -72,7 +68,6 @@ def handle_guess(data):
     global round_active
     username = data['username']
     guess = data['guess']
-
     if guess.strip().lower() == current_word.lower() and round_active:
         scores[username] += 10
         round_active = False
@@ -90,6 +85,4 @@ def next_turn():
     start_round()
 
 if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", port=10000)
-
-
+    socketio.run(app, host='0.0.0.0', port=10000)

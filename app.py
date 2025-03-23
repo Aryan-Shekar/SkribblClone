@@ -1,4 +1,4 @@
-# 👇 IMPORTANT: Patch eventlet BEFORE importing anything else
+# 👇 Patch eventlet BEFORE any other import
 import eventlet
 eventlet.monkey_patch()
 
@@ -7,11 +7,11 @@ from flask_socketio import SocketIO, emit
 import random
 import threading
 import time
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode='eventlet')
-
 
 players = []
 scores = {}
@@ -86,8 +86,5 @@ def next_turn():
     start_round()
 
 if __name__ == '__main__':
-    import os
     PORT = int(os.environ.get("PORT", 10000))
     socketio.run(app, host='0.0.0.0', port=PORT)
-
-
